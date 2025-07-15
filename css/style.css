@@ -68,3 +68,10 @@ footer a:hover {
         min-height: 50vh;
     }
 }
+#querymail {
+    align-items: center;
+    align-self: center;
+    align-content: center;
+    padding-left: 270px;
+    background-color: #cf6f6f;
+}
