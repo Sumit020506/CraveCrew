@@ -93,7 +93,7 @@ function handleFormSubmit(e) {
     };
 
     // Use proper URL (remove the double protocol)
-    fetch('https://cravecrew.netlify.app/api/contact', {
+    fetch('https://localhost:3000/api/contact', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
