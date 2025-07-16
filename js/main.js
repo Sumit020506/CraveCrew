@@ -12,37 +12,40 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-function loadMenuItems() {
-    fetch('/api/menu')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const menuContainer = document.querySelector('#menu .row');
-            if (menuContainer) {
-                menuContainer.innerHTML = '';
-                data.forEach(item => {
-                    const menuItem = document.createElement('div');
-                    menuItem.className = 'col-md-4';
-                    menuItem.innerHTML = `
-                        <div class="card menu-card">
-                            <img src="${item.image}" class="card-img-top" alt="${item.name}">
-                            <div class="card-body">
-                                <h5 class="card-title">${item.name}</h5>
-                                <p class="card-text">${item.description}</p>
-                                <p class="text-primary fw-bold">₹${item.price}</p>
-                                <button class="btn btn-sm btn-primary">Add to Cart</button>
-                            </div>
+// Use environment variable for API base URL or fallback to production URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://cravecrew.netlify.app/';
+
+async function loadMenuItems() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/menu`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        
+        const menuContainer = document.querySelector('#menu .row');
+        if (menuContainer) {
+            menuContainer.innerHTML = '';
+            data.forEach(item => {
+                const menuItem = document.createElement('div');
+                menuItem.className = 'col-md-4';
+                menuItem.innerHTML = `
+                    <div class="card menu-card">
+                        <img src="${item.image}" class="card-img-top" alt="${item.name}">
+                        <div class="card-body">
+                            <h5 class="card-title">${item.name}</h5>
+                            <p class="card-text">${item.description}</p>
+                            <p class="text-primary fw-bold">₹${item.price}</p>
+                            <button class="btn btn-sm btn-primary">Add to Cart</button>
                         </div>
-                    `;
-                    menuContainer.appendChild(menuItem);
-                });
-            }
-        })
-        .catch(error => console.error('Error loading menu:', error));
+                    </div>
+                `;
+                menuContainer.appendChild(menuItem);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading menu:', error);
+    }
 }
 
 function initMap() {
@@ -88,15 +91,8 @@ function initMap() {
         });
     }
 }
-// Replace all localhost:3000 references with your actual backend URL
-const API_BASE_URL = 'https://cravecrew.netlify.app/'; // Replace with your actual backend URL
 
-function loadMenuItems() {
-    fetch(`${API_BASE_URL}/api/menu`)
-    // ... rest of the function remains the same
-}
-
-function handleFormSubmit(e) {
+async function handleFormSubmit(e) {
     e.preventDefault();
 
     const formData = {
@@ -105,48 +101,28 @@ function handleFormSubmit(e) {
         query: document.getElementById('query').value
     };
 
-    fetch(`${API_BASE_URL}/api/contact`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-    })
-    // ... rest of the function remains the same
-}
-
-function handleFormSubmit(e) {
-    e.preventDefault();
-
-    const formData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        query: document.getElementById('query').value
-    };
-
-    fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                alert('Thank you for your query! We will get back to you soon.');
-                document.getElementById('contactForm').reset();
-            } else {
-                throw new Error(data.message || 'Unknown error occurred');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('There was an error submitting your query. Please try again later.');
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/contact`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
         });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            alert('Thank you for your query! We will get back to you soon.');
+            document.getElementById('contactForm').reset();
+        } else {
+            throw new Error(data.message || 'Unknown error occurred');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('There was an error submitting your query. Please try again later.');
+    }
 }
