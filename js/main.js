@@ -79,6 +79,10 @@ function initMap() {
         });
     }
 }
+
+fetch('https://cravecrew.netlify.app/api/test')
+  .then(console.log)
+  .catch(console.error);
 function handleFormSubmit(e) {
     e.preventDefault();
 
