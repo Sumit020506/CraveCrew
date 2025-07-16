@@ -88,6 +88,32 @@ function initMap() {
         });
     }
 }
+// Replace all localhost:3000 references with your actual backend URL
+const API_BASE_URL = 'https://cravecrew.netlify.app/'; // Replace with your actual backend URL
+
+function loadMenuItems() {
+    fetch(`${API_BASE_URL}/api/menu`)
+    // ... rest of the function remains the same
+}
+
+function handleFormSubmit(e) {
+    e.preventDefault();
+
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        query: document.getElementById('query').value
+    };
+
+    fetch(`${API_BASE_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    // ... rest of the function remains the same
+}
 
 function handleFormSubmit(e) {
     e.preventDefault();
@@ -105,22 +131,22 @@ function handleFormSubmit(e) {
         },
         body: JSON.stringify(formData)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            alert('Thank you for your query! We will get back to you soon.');
-            document.getElementById('contactForm').reset();
-        } else {
-            throw new Error(data.message || 'Unknown error occurred');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('There was an error submitting your query. Please try again later.');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Thank you for your query! We will get back to you soon.');
+                document.getElementById('contactForm').reset();
+            } else {
+                throw new Error(data.message || 'Unknown error occurred');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error submitting your query. Please try again later.');
+        });
 }
