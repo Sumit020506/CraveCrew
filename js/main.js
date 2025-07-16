@@ -89,7 +89,7 @@ function handleFormSubmit(e) {
         query: document.getElementById('query').value
     };
     
-    fetch('http://localhost:3000/api/contact', {
+    fetch('http://https://cravecrew.netlify.app//api/contact', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
